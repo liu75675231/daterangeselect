@@ -1,0 +1,119 @@
+.datepicker-container {
+    position: fixed;
+    top: 41px;
+    height: 330px;
+    width: 600px;
+    border: solid 1px #e4e7ed;
+    color: #333;
+    font-size: 14px;
+    display: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    background-color: #fff;
+}
+
+.datepicker-container .shortcut-wrapper {
+    float: left;
+    width: 100px;
+    height: 100%;
+    border-right: solid 1px #e4e7ed;
+    overflow: hidden;
+}
+.datepicker-container .shortcut-list {
+    height: 100%;
+    margin-right: -50px;
+    padding-right: 50px;
+    overflow-y: scroll;
+    padding-top: 5px;
+}
+.datepicker-container .shortcut-item {
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.datepicker-container .shortcut-item:hover, .datepicker-container .shortcut-item.selected {
+    color: #409eff;
+}
+.datepicker-container .shortcut-item.selected {
+    cursor: initial;
+}
+.datepicker-container .main-content {
+    margin-left: 100px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.datepicker-container .calendar-content {
+    display: flex;
+    min-height: 287px;
+}
+.datepicker-container .date-panel {
+    width: 50%;
+    padding: 5px 15px;
+}
+.datepicker-container .start-date {
+
+}
+.datepicker-container .end-date {
+
+}
+.datepicker-container table,
+.datepicker-container tr,
+.datepicker-container td,
+.datepicker-container th {
+    text-align: center;
+}
+.datepicker-container table {
+    width: 100%;
+    margin-top: 7px;
+}
+.datepicker-container td, .datepicker-container th {
+    width: 20px;
+    height: 20px;
+    white-space: nowrap;
+    padding: 5px;
+}
+.datepicker-container td {
+    cursor: pointer;
+}
+.datepicker-container .off {
+    color: #999;
+}
+.datepicker-container .in-range {
+    background-color: #ebf4f8;
+    border-color: transparent;
+    border-radius: 0;
+}
+.datepicker-container .not-current-month {
+    color: #888;
+}
+.datepicker-container .active {
+    background-color: #357ebd;
+    border-color: transparent;
+    color: #fff;
+}
+.datepicker-container .start-day {
+    border-radius: 4px 0 0 4px;
+}
+.datepicker-container .end-day {
+    border-radius: 0 4px 4px 0;
+}
+.datepicker-container .header-week {
+
+}
+.datepicker-container .header-date-title {
+
+}
+.datepicker-container .empty,.datepicker-container .day-disabled {
+    cursor: initial;
+}
+.datepicker-container .day-disabled {
+    color: #ccc;
+}
+.datepicker-container .arrow {
+    cursor: pointer;
+}
+.datepicker-container .btn-panel {
+    border-top: solid 1px #e4e7ed;
+    padding: 5px;
+    text-align: right;
+}
