@@ -24,6 +24,9 @@
     allowEmpty: false, // 值为boolean，默认为false,如果为true，则会多出一个重置按钮，点击以后，输出的日期都为undefined
     plain: false, // 值为boolean，默认为false，如果为true，则输出指定的日期的Date格式化字符串，反之则返回其对应Date对象
    },
+   range: {   // 左边快捷选项菜单相关配置
+       show: true,  //是否显示左边快捷选项菜单
+   },
    submitCallback: function (start, end) {} // 点击确定或者重置后，触发该回调，参数start和end分别为开始时间或者结束日期，其结果可能为Date对象或者是格式化字符串，需要根据output.plain字段来定
 }
 ```

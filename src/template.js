@@ -1,5 +1,3 @@
-import config from './config'
-
 let template = `
     <div class="drs-datepicker-container">
         <div class="drs-shortcut-wrapper">

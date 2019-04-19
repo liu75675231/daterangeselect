@@ -1,7 +1,3 @@
-import config from './config';
-import TEMPLATE from "./template";
-
-
 
 const validate = (options) => {
     let errorMsg = ''

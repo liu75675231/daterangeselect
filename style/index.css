@@ -2,7 +2,6 @@
     position: absolute;
     top: 41px;
     height: 330px;
-    width: 600px;
     border: solid 1px #e4e7ed;
     color: #333;
     font-size: 14px;
@@ -23,6 +22,7 @@
     height: 100%;
     border-right: solid 1px #e4e7ed;
     overflow: hidden;
+    display: none;
 }
 .drs-datepicker-container .drs-shortcut-list {
     height: 100%;
@@ -43,7 +43,6 @@
     cursor: initial;
 }
 .drs-datepicker-container .drs-main-content {
-    margin-left: 100px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -164,3 +163,14 @@
     color: #409eff;
     font-weight: bold;
 }
+/* 有快捷选择的情况 start */
+.drs-datepicker-container.with-range {
+
+}
+.drs-datepicker-container.with-range .drs-shortcut-wrapper {
+    display: initial;
+}
+.drs-datepicker-container.with-range .drs-main-content {
+    margin-left: 100px;
+}
+/* 有快捷选择的情况 end */
