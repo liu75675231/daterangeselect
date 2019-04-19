@@ -20,7 +20,7 @@ let template = `
         
         <div class="drs-main-content">
             <div class="drs-calendar-content">
-                <div class="drs-start-date drs-date-panel">
+                <div class="drs-start-date drs-date-panel" data-type="start">
                     <div class="input-group input-group-sm">
                         <span class="input-group-btn">
                             <span class="btn btn-default">
@@ -74,7 +74,7 @@ let template = `
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class="drs-end-date drs-date-panel">
+                <div class="drs-end-date drs-date-panel"  data-type="end">
                     <div class="input-group input-group-sm">
                         <span class="input-group-btn">
                             <span class="btn btn-default">

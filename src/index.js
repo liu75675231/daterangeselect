@@ -341,10 +341,10 @@ Calendar = (function () {
                         self.setYearSelectPanel(getInitHeaderYear());
                         self.$title.find('.drs-header-popup-item').removeClass('drs-selected');
                         self.$title.find('.drs-year-' + self._visibleYear).addClass('drs-selected');
-                        console.log(self);
                         $popupYear.show();
                     }
                     $popupMonth.hide();
+
                 } else {
                     if ($popupMonth.css('display') === 'block') {
                         $popupMonth.hide();
@@ -354,6 +354,13 @@ Calendar = (function () {
                         $popupMonth.show();
                     }
                     $popupYear.hide();
+
+                }
+
+                if (self.$calendar.data('type') === 'start') {
+                    self.DateRangeSelect.endCalendar.$title.find('.drs-header-popup').hide();
+                } else {
+                    self.DateRangeSelect.startCalendar.$title.find('.drs-header-popup').hide();
                 }
             });
             this.$title.on('click', '.drs-header-popup-item', function(e) {
