@@ -339,6 +339,9 @@ Calendar = (function () {
                         $popupYear.hide();
                     } else {
                         self.setYearSelectPanel(getInitHeaderYear());
+                        self.$title.find('.drs-header-popup-item').removeClass('drs-selected');
+                        self.$title.find('.drs-year-' + self._visibleYear).addClass('drs-selected');
+                        console.log(self);
                         $popupYear.show();
                     }
                     $popupMonth.hide();
@@ -346,6 +349,8 @@ Calendar = (function () {
                     if ($popupMonth.css('display') === 'block') {
                         $popupMonth.hide();
                     } else {
+                        self.$title.find('.drs-header-popup-item').removeClass('drs-selected');
+                        self.$title.find('.drs-month-' + self._visibleMonth).addClass('drs-selected');
                         $popupMonth.show();
                     }
                     $popupYear.hide();

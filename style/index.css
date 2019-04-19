@@ -160,6 +160,6 @@
     font-weight: normal;
     cursor: pointer;
 }
-.drs-datepicker-container .drs-header-popup-item:hover {
+.drs-datepicker-container .drs-header-popup-item:hover, .drs-datepicker-container .drs-header-popup-item.drs-selected {
     color: #409eff;
 }
