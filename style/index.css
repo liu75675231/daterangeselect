@@ -1,5 +1,5 @@
-.datepicker-container {
-    position: fixed;
+.drs-datepicker-container {
+    position: absolute;
     top: 41px;
     height: 330px;
     width: 600px;
@@ -9,111 +9,157 @@
     display: none;
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
     background-color: #fff;
+    z-index: 999;
 }
 
-.datepicker-container .shortcut-wrapper {
+.drs-datepicker-container * {
+    box-sizing: border-box;
+    line-height: 1.42857143;
+}
+
+.drs-datepicker-container .drs-shortcut-wrapper {
     float: left;
     width: 100px;
     height: 100%;
     border-right: solid 1px #e4e7ed;
     overflow: hidden;
 }
-.datepicker-container .shortcut-list {
+.drs-datepicker-container .drs-shortcut-list {
     height: 100%;
     margin-right: -50px;
     padding-right: 50px;
     overflow-y: scroll;
     padding-top: 5px;
 }
-.datepicker-container .shortcut-item {
+.drs-datepicker-container .drs-shortcut-item {
     padding: 4px 12px;
     cursor: pointer;
 }
 
-.datepicker-container .shortcut-item:hover, .datepicker-container .shortcut-item.selected {
+.drs-datepicker-container .drs-shortcut-item:hover, .drs-datepicker-container .drs-shortcut-item.selected {
     color: #409eff;
 }
-.datepicker-container .shortcut-item.selected {
+.drs-datepicker-container .drs-shortcut-item.selected {
     cursor: initial;
 }
-.datepicker-container .main-content {
+.drs-datepicker-container .drs-main-content {
     margin-left: 100px;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
-.datepicker-container .calendar-content {
+.drs-datepicker-container .drs-calendar-content {
     display: flex;
     min-height: 287px;
 }
-.datepicker-container .date-panel {
+.drs-datepicker-container .drs-date-panel {
     width: 50%;
     padding: 5px 15px;
 }
-.datepicker-container .start-date {
+.drs-datepicker-container .drs-start-date {
 
 }
-.datepicker-container .end-date {
+.drs-datepicker-container .drs-end-date {
 
 }
-.datepicker-container table,
-.datepicker-container tr,
-.datepicker-container td,
-.datepicker-container th {
+.drs-datepicker-container table,
+.drs-datepicker-container tr,
+.drs-datepicker-container td,
+.drs-datepicker-container th {
     text-align: center;
 }
-.datepicker-container table {
+.drs-datepicker-container table {
     width: 100%;
     margin-top: 7px;
 }
-.datepicker-container td, .datepicker-container th {
+.drs-datepicker-container td, .drs-datepicker-container th {
     width: 20px;
     height: 20px;
     white-space: nowrap;
     padding: 5px;
 }
-.datepicker-container td {
+.drs-datepicker-container th {
+    position: relative;
+}
+.drs-datepicker-container td {
     cursor: pointer;
 }
-.datepicker-container .off {
+.drs-datepicker-container .drs-off {
     color: #999;
 }
-.datepicker-container .in-range {
+.drs-datepicker-container .drs-in-range {
     background-color: #ebf4f8;
     border-color: transparent;
     border-radius: 0;
 }
-.datepicker-container .not-current-month {
+.drs-datepicker-container .drs-not-current-month {
     color: #888;
 }
-.datepicker-container .active {
+.drs-datepicker-container .drs-active {
     background-color: #357ebd;
     border-color: transparent;
     color: #fff;
 }
-.datepicker-container .start-day {
+.drs-datepicker-container .drs-start-day {
     border-radius: 4px 0 0 4px;
 }
-.datepicker-container .end-day {
+.drs-datepicker-container .drs-end-day {
     border-radius: 0 4px 4px 0;
 }
-.datepicker-container .header-week {
-
-}
-.datepicker-container .header-date-title {
-
-}
-.datepicker-container .empty,.datepicker-container .day-disabled {
-    cursor: initial;
-}
-.datepicker-container .day-disabled {
-    color: #ccc;
-}
-.datepicker-container .arrow {
+.drs-datepicker-container .drs-header-year, .drs-datepicker-container .drs-header-month {
     cursor: pointer;
 }
-.datepicker-container .btn-panel {
+.drs-datepicker-container .drs-header-year:hover, .drs-datepicker-container .drs-header-month:hover {
+    color: #409eff;
+}
+.drs-datepicker-container .drs-header-week {
+
+}
+.drs-datepicker-container .drs-header-date-title {
+
+}
+.drs-datepicker-container .drs-empty,.drs-datepicker-container .drs-day-disabled {
+    cursor: initial;
+}
+.drs-datepicker-container .drs-day-disabled {
+    color: #ccc;
+}
+.drs-datepicker-container .drs-arrow {
+    cursor: pointer;
+}
+.drs-datepicker-container .drs-btn-panel {
     border-top: solid 1px #e4e7ed;
     padding: 5px;
     text-align: right;
+}
+.drs-datepicker-container.no-ranges .drs-shortcut-wrapper {
+    display: none;
+}
+.drs-datepicker-container.no-ranges .drs-main-content {
+    margin-left: 0px;
+}
+.drs-datepicker-container .drs-opt-btn {
+    margin-right: 4px;
+}
+.drs-datepicker-container .drs-header-popup {
+    position: absolute;
+    background-color: #fff;
+    border: solid 1px #e4e7ed;
+    width: 200%;
+    left: -50%;
+    z-index: 1;
+    white-space: normal;
+    font-size: 0;
+}
+.drs-datepicker-container .drs-header-popup-item {
+    white-space: normal;
+    font-size: 14px;
+    display: inline-block;
+    width: 33%;
+    line-height: 2;
+    font-weight: normal;
+    cursor: pointer;
+}
+.drs-datepicker-container .drs-header-popup-item:hover {
+    color: #409eff;
 }

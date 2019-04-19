@@ -1,4 +1,4 @@
-import TEMPLATE from './template'
+import TEMPLATE, { getOptButtons, getHeaderYearsHtml, getHeaderYearsSpan, getInitHeaderYear } from './template'
 import config from "./config";
 var $, Calendar, DAYS, DateRangeSelect, MONTHS;
 $ = jQuery;
@@ -31,6 +31,10 @@ DateRangeSelect = (function () {
             if (this.options.noRanges) {
                 this.$DateRangeSelect.addClass('no-ranges');
             }
+            this.$select.parent().css({
+                position: 'relative',
+            });
+            this.$DateRangeSelect.find('.drs-btn-panel').html(getOptButtons(this.options));
         }
         DateRangeSelect.prototype.initBindings = function () {
             var self;
@@ -43,20 +47,57 @@ DateRangeSelect = (function () {
                 }, 0);
                 return false;
             });
-            this.$DateRangeSelect.click(function (evt) {
+
+            this.$DateRangeSelect.bind('click', function (evt) {
+                let $target = $(evt.target);
+                if ($target.hasClass('drs-header-popup-priv') || $target.hasClass('drs-header-popup-next')) {
+                    return evt.stopPropagation();
+                }
+                if (!$target.hasClass('drs-header-btn')) {
+                    self.$DateRangeSelect.find('.drs-header-popup').hide();
+                }
+
                 return evt.stopPropagation();
             });
+
             $(document).click(function (evt) {
-                if (evt.target === self.$select[0] && self.isHidden) {
+                if ((evt.target === self.$select[0] || $(evt.target).parent(self.$select[0])[0] === self.$select[0]) && self.isHidden) {
+                    self.$DateRangeSelect.find('.drs-header-popup').hide();
                     return self.show();
                 } else if (!self.isHidden) {
                     return self.hide();
                 }
             });
-            this.$DateRangeSelect.find('.btn-cancel').click(function () {
+            this.$DateRangeSelect.find('.drs-btn-cancel').click(function () {
                 return self.hide();
             });
-            this.$DateRangeSelect.find('.btn-submit').click(function () {
+
+            if (self.options.output && self.options.output.allowEmtpy) {
+                this.$DateRangeSelect.find('.drs-btn-reset').click(function () {
+                    var output = self.options.output;
+                    if (output.show) {
+                        output.show.prop('tagName').toLowerCase() === 'input'
+                            ? output.show.val('')
+                            : output.show.text('');
+                    }
+                    if (output.start) {
+                        output.start.prop('tagName').toLowerCase() === 'input'
+                            ? output.start.val('')
+                            : output.start.text('');
+                    }
+
+                    if (output.end) {
+                        output.end.prop('tagName').toLowerCase() === 'input'
+                            ? output.end.val('')
+                            : output.end.text('');
+                    }
+
+                    self.options.submitCallback && self.options.submitCallback(undefined, undefined);
+                    return self.hide();
+                });
+            }
+
+            this.$DateRangeSelect.find('.drs-btn-submit').click(function () {
                 if (self.startCalendar.date > self.endCalendar.date) {
                     console.error('开始时间不能大于结束时间，请重新选择');
                     return;
@@ -64,6 +105,8 @@ DateRangeSelect = (function () {
 
                 let startDate = self.formatDate(self.startDate()),
                     endDate = self.formatDate(self.endDate());
+                var callbackStartDate = self.startDate();
+                var callbackEndDate = self.endDate();
                 if (self.options.output) {
                     let output = self.options.output,
                         $show = output.show,
@@ -86,31 +129,43 @@ DateRangeSelect = (function () {
                             ? $end.val(endDate)
                             : $end.text(endDate);
                     }
+                    if (self.options.output.plain) {
+                        callbackStartDate = self.formatDate(callbackStartDate);
+                        callbackEndDate = self.formatDate(callbackEndDate);
+                    }
                 }
-                self.options.submitCallback && self.options.submitCallback(startDate, endDate);
+
+                self.options.submitCallback && self.options.submitCallback(callbackStartDate, callbackEndDate);
                 return self.hide();
             });
-            this.$DateRangeSelect.on("keypress blur",".input-date", function (e) {
+            this.$DateRangeSelect.on("keypress blur",".drs-input-date", function (e) {
                 if (e.type === 'keypress' && e.which !== 13) {
                     return true;
                 }
                 var isDateStr = true;
                 var dateObj = {}
-                self.$DateRangeSelect.find(".input-date").each(function (index, elem) {
+                self.$DateRangeSelect.find(".drs-input-date").each(function (index, elem) {
                     if (elem.value === '' || new Date(elem.value) == 'Invalid Date') {
                         isDateStr = false;
                         console.error('日期为空或者不合法');
+                        self.showCustomDate();
                         return false;
                     }
                     var $elem = $(elem);
                     dateObj[$elem.data('type')] = elem.value;
                 })
+
                 if (isDateStr) {
-                    self.setRange('direct', dateObj.start, dateObj.end);
+                    if (dateObj.start > dateObj.end) {
+                        self.setRange('direct', dateObj.start, dateObj.start);
+                    } else {
+                        self.setRange('direct', dateObj.start, dateObj.end);
+                    }
+
                 }
                 return true;
             });
-            return this.$DateRangeSelect.find('.shortcut-item').click(function (evt) {
+            return this.$DateRangeSelect.find('.drs-shortcut-item').click(function (evt) {
                 var presetIndex;
                 var $this = $(this);
                 presetIndex = $this.index();
@@ -131,14 +186,14 @@ DateRangeSelect = (function () {
         DateRangeSelect.prototype.adjustPosition = function () {
             var rect = this.$select.get(0).getBoundingClientRect();
             var pos = {
-                top: rect.bottom + 10 + 'px',
+                top: rect.height + 'px',
             };
 
             var left = undefined;
-            if (rect.x + 600 > screen.availWidth) {
-                pos.left =  rect.right - 600 + 'px';
+            if (rect.left + 650 > screen.availWidth) {
+                pos.right =  '0px';
             } else {
-                pos.left = rect.left + 'px';
+                pos.left = '0px';
             }
             this.$DateRangeSelect.css(pos);
         }
@@ -216,8 +271,8 @@ DateRangeSelect = (function () {
 
             obj[type](startDate, start, false);
             obj[type](endDate, end, true);
-            this.startCalendar = new Calendar(this, this.$DateRangeSelect.find('.start-date'), startDate, true);
-            this.endCalendar = new Calendar(this, this.$DateRangeSelect.find('.end-date'), endDate, false);
+            this.startCalendar = new Calendar(this, this.$DateRangeSelect.find('.drs-start-date'), startDate, true);
+            this.endCalendar = new Calendar(this, this.$DateRangeSelect.find('.drs-end-date'), endDate, false);
             this.showCustomDate();
             return this.draw();
         };
@@ -248,21 +303,92 @@ Calendar = (function () {
             this.date.setHours(0, 0, 0, 0);
             this._visibleMonth = this.month();
             this._visibleYear = this.year();
-            this.$title = this.$calendar.find('.header-date-title');
-            this.$dayHeaders = this.$calendar.find('.header-week');
-            this.$input = this.$calendar.find('.input-date');
+            this.$title = this.$calendar.find('.drs-header-date-title');
+            this.$dayHeaders = this.$calendar.find('.drs-header-week');
+            this.$input = this.$calendar.find('.drs-input-date');
             this.$days = this.$calendar.find('tbody');
             this.$dateDisplay = this.$calendar.find('.drp-calendar-date');
-            $calendar.find('.arrow').click(function (evt) {
+            this.currentHeaderPopupMaxYear = getInitHeaderYear();
+
+            this.$title.find('.drs-header-popup-container').html(getHeaderYearsHtml(this.currentHeaderPopupMaxYear));
+
+            $calendar.find('.drs-arrow').click(function (evt) {
                 if ($(this).data('type') === 'next') {
-                    self.showNextMonth();
+                    if ($(this).data('span') === 'month') {
+                        self.showNextMonth();
+                    } else {
+                        self.showNextYear();
+                    }
+
                 } else {
-                    self.showPreviousMonth();
+                    if ($(this).data('span') === 'month') {
+                        self.showPreviousMonth();
+                    } else {
+                        self.showPreviousYear();
+                    }
+
                 }
                 return false;
             });
-        }
+            this.$title.find('.drs-header-btn').off("click").click(function(e) {
+                let $elem = $(e.target);
+                let $popupYear = self.$title.find('.drs-header-popup-year');
+                let $popupMonth = self.$title.find('.drs-header-popup-month');
+                if ($elem.data('type') === 'year') {
+                    if ($popupYear.css('display') === 'block') {
+                        $popupYear.hide();
+                    } else {
+                        self.setYearSelectPanel(getInitHeaderYear());
+                        $popupYear.show();
+                    }
+                    $popupMonth.hide();
+                } else {
+                    if ($popupMonth.css('display') === 'block') {
+                        $popupMonth.hide();
+                    } else {
+                        $popupMonth.show();
+                    }
+                    $popupYear.hide();
+                }
+            });
+            this.$title.on('click', '.drs-header-popup-item', function(e) {
+                let $target = $(e.target);
+                if ($target.hasClass('drs-header-popup-priv')) {
+                    self.setYearSelectPanelToPriv();
+                    return;
+                }
+                if ($target.hasClass('drs-header-popup-next')) {
+                    self.setYearSelectPanelToNext();
+                    return;
+                }
 
+                let type = $target.parent('.drs-header-popup').data('type');
+
+                if (type === 'month') {
+                    self.setCurrentMonth($target.data('num'));
+                } else {
+                    let num = undefined;
+                    if ($target.hasClass('drs-header-popup-this-year')) {
+                        num = new Date().getFullYear();
+                    } else {
+                        num = $target.data('num');
+                    }
+                    self.setCurrentYear(num);
+                }
+            });
+        }
+        Calendar.prototype.setYearSelectPanelToPriv = function () {
+            this.currentHeaderPopupMaxYear -= getHeaderYearsSpan();
+            this.$title.find('.drs-header-popup-container').html(getHeaderYearsHtml(this.currentHeaderPopupMaxYear));
+        }
+        Calendar.prototype.setYearSelectPanelToNext = function () {
+            this.currentHeaderPopupMaxYear += getHeaderYearsSpan();
+            this.$title.find('.drs-header-popup-container').html(getHeaderYearsHtml(this.currentHeaderPopupMaxYear));
+        }
+        Calendar.prototype.setYearSelectPanel = function (num) {
+            this.currentHeaderPopupMaxYear = num;
+            this.$title.find('.drs-header-popup-container').html(getHeaderYearsHtml(this.currentHeaderPopupMaxYear));
+        }
         Calendar.prototype.showPreviousMonth = function () {
             if (this._visibleMonth === 1) {
                 this._visibleMonth = 12;
@@ -272,7 +398,14 @@ Calendar = (function () {
             }
             return this.draw();
         }
-        ;
+        Calendar.prototype.showPreviousYear = function () {
+            this._visibleYear -= 1;
+            return this.draw();
+        }
+        Calendar.prototype.setCurrentYear = function (year) {
+            this._visibleYear = year;
+            this.draw();
+        }
         Calendar.prototype.showNextMonth = function () {
             if (this._visibleMonth === 12) {
                 this._visibleMonth = 1;
@@ -282,7 +415,14 @@ Calendar = (function () {
             }
             return this.draw();
         }
-        ;
+        Calendar.prototype.setCurrentMonth = function (month) {
+            this._visibleMonth = month;
+            this.draw();
+        }
+        Calendar.prototype.showNextYear = function () {
+            this._visibleYear += 1;
+            return this.draw();
+        }
         Calendar.prototype.setDay = function (day) {
             this.setDate(this.visibleYear(), this.visibleMonth(), day);
             return this.DateRangeSelect.showCustomDate();
@@ -297,7 +437,8 @@ Calendar = (function () {
         Calendar.prototype.draw = function () {
             var day, _i, _len;
             this.$dayHeaders.empty();
-            this.$title.text((this.visibleYear()) + "年" + (this.nameOfMonth(this.visibleMonth())));
+            this.$title.find('.drs-header-year').text(this.visibleYear() + '年');
+            this.$title.find('.drs-header-month').text(this.nameOfMonth(this.visibleMonth()));
             for (_i = 0, _len = DAYS.length; _i < _len; _i++) {
                 day = DAYS[_i];
                 this.$dayHeaders.append($("<th>" + day + "</th>"));
@@ -331,25 +472,25 @@ Calendar = (function () {
             classes = '';
 
             if (this.dateIsSelected(date)) {
-                classes = 'active';
-                if (this.$calendar.hasClass("start-date")) {
-                    classes += ' start-day';
+                classes = 'drs-active';
+                if (this.$calendar.hasClass("drs-start-date")) {
+                    classes += ' drs-start-day';
                 }
-                if (this.$calendar.hasClass("end-date")) {
-                    classes += ' end-day';
+                if (this.$calendar.hasClass("drs-end-date")) {
+                    classes += ' drs-end-day';
                 }
 
             } else if (this.dateIsInRange(date)) {
-                classes = 'in-range';
+                classes = 'drs-in-range';
                 if (date.getTime() === this.DateRangeSelect.endDate().getTime()) {
                     classes += ' drp-day-last-in-range';
                 }
             } else if (this.isStartCalendar) {
                 if (date > this.DateRangeSelect.endDate()) {
-                    classes += ' day-disabled';
+                    classes += ' drs-day-disabled';
                 }
             } else if (date < this.DateRangeSelect.startDate()) {
-                classes += ' day-disabled';
+                classes += ' drs-day-disabled';
             }
             return classes;
         }
@@ -370,7 +511,7 @@ Calendar = (function () {
 
             var tempDaysArr = [];
             for (let n = 0; n < daysOfLastWeekOfLastMonth.length; n++) {
-                tempDaysArr.push("<td class='not-current-month " + (this.dayClass(daysOfLastWeekOfLastMonth[n], 'priv')) + "' data-type='priv'>" + daysOfLastWeekOfLastMonth[n] + "</td>");
+                tempDaysArr.push("<td class='drs-not-current-month " + (this.dayClass(daysOfLastWeekOfLastMonth[n], 'priv')) + "' data-type='priv'>" + daysOfLastWeekOfLastMonth[n] + "</td>");
             }
 
             var num = 0;
@@ -381,7 +522,7 @@ Calendar = (function () {
                     if (tempDaysArr.length < 7) {
                         let nextNum = 6 - tempDaysArr.length;
                         for (let n = 0; n <= nextNum; n++) {
-                            tempDaysArr.push("<td class='not-current-month " + (this.dayClass((n + 1), 'next')) + "' data-type='next'>" + (n + 1) + "</td>");
+                            tempDaysArr.push("<td class='drs-not-current-month " + (this.dayClass((n + 1), 'next')) + "' data-type='next'>" + (n + 1) + "</td>");
                         }
                     }
                     this.$days.append($("<tr>" + tempDaysArr.join('') + "</tr>"));
@@ -391,7 +532,7 @@ Calendar = (function () {
 
             return this.$calendar.find('td').click(function (evt) {
                 var day;
-                if ($(this).hasClass('day-disabled')) {
+                if ($(this).hasClass('drs-day-disabled')) {
                     return false;
                 }
 
