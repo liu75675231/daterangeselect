@@ -1,7 +1,6 @@
 import config from './rollup.config';
 import minify from 'rollup-plugin-babel-minify';
 import merge from 'merge';
-import minifyHTML from 'rollup-plugin-minify-html-literals';
 import babel from "rollup-plugin-babel";
 export default merge(config, {
     output: {
@@ -10,8 +9,15 @@ export default merge(config, {
         name: "DateRangeSelect",
     },
     plugins: [
-        minify(),
-        minifyHTML(),
+        minify({
+            bannerNewLine: true,
+            banner: `/*! 
+ * daterangeselect.min.js v0.0.1 
+ * author liuht 
+ * github: https://github.com/liu75675231/daterangeselect
+ * author personal website: http://www.lht.ren 
+*/`,
+        }),
         babel({
             exclude: 'node_modules/**',
         }),
