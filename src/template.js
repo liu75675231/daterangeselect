@@ -1,3 +1,4 @@
+
 let template = `
     <div class="drs-datepicker-container">
         <div class="drs-shortcut-wrapper">
@@ -133,12 +134,7 @@ let template = `
     </div>`
 
 export default template;
-export function getRangeHtml (arr = []) {
-    let template = '';
-    arr.forEach((elem) => {
-        template = `<div class="shortcut-item" data-type="${ elem.type }" data-start="${ elem.offsetStart }" data-end="${ elem.offsetEnd }">{{ elem.name }}</div>`
-    });
-}
+
 export function getOptButtons(option) {
     let arr = [
         '<button class="btn btn-success btn-sm drs-btn-submit drs-opt-btn" type="button">确定</button>',
@@ -166,3 +162,4 @@ const initHeaderYear = new Date().getFullYear();
 export function getInitHeaderYear () {
     return initHeaderYear;
 }
+

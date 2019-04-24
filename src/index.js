@@ -1,6 +1,6 @@
-import TEMPLATE, { getOptButtons, getHeaderYearsHtml, getHeaderYearsSpan, getInitHeaderYear } from './template'
-import config from "./config";
+import TEMPLATE, { getOptButtons } from './template'
 import Calendar from "./calendar";
+import { init as rangeInit } from "./range";
 var $, DAYS, DateRangeSelect;
 $ = jQuery;
 
@@ -12,7 +12,7 @@ const defaults = {
     },
     range: {
         show: true,
-        data: [Object.keys(config.ranges)],
+        data:[],
     },
     submitCallback: function () { },
 }
@@ -23,7 +23,7 @@ DateRangeSelect = (function () {
             this.$DateRangeSelect = $(TEMPLATE);
             this.$select.attr('tabindex', '-1').before(this.$DateRangeSelect);
             this.isHidden = true;
-            this.options = $.extend({}, defaults, options);
+            this.options = $.extend(true, {}, defaults, options);
             this.initOptions();
             this.initBindings();
 
@@ -35,13 +35,12 @@ DateRangeSelect = (function () {
 
         }
         DateRangeSelect.prototype.initOptions = function () {
-            if (this.options.range.show) {
-                this.$DateRangeSelect.addClass('with-range');
-            }
+            rangeInit(this);
             this.$select.parent().css({
                 position: 'relative',
             });
             this.$DateRangeSelect.find('.drs-btn-panel').html(getOptButtons(this.options));
+
         }
         DateRangeSelect.prototype.initBindings = function () {
             var self;
@@ -172,13 +171,6 @@ DateRangeSelect = (function () {
                 }
                 return true;
             });
-            return this.$DateRangeSelect.find('.drs-shortcut-item').click(function (evt) {
-                var presetIndex;
-                var $this = $(this);
-                presetIndex = $this.index();
-                self.$select[0].selectedIndex = presetIndex;
-                self.setRange($this.data('type'),$this.data('start'), $this.data('end'));
-            });
         }
         DateRangeSelect.prototype.hide = function () {
             this.isHidden = true;
@@ -197,7 +189,7 @@ DateRangeSelect = (function () {
             };
 
             var left = undefined;
-            if (rect.left + 650 > screen.availWidth) {
+            if (rect.left + 650 > window.innerWidth) {
                 pos.right =  '0px';
             } else {
                 pos.left = '0px';

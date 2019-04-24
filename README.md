@@ -26,6 +26,15 @@
    },
    range: {   // 左边快捷选项菜单相关配置
        show: true,  //是否显示左边快捷选项菜单
+       data: [     // 左边快捷菜单具体条目，可以为空，如果为空，并且show为true的话，那么将会显示默认快捷键列表
+        {         // 用户可以自定义自己的快捷条目
+            type: 'month',   // 定义自定义条目的类型，值为：day，week， month， season， year
+            name: '前三个月',  // 显示名称
+            offsetStart: -3,  // 开始时间相比现在来说的相对于type的时间偏移量
+            offsetEnd: -1,   // 结束时间相比现在来说的相对于type的时间偏移量，其应该大于offsetStart
+        },
+        "yesterday",   // 为比较常用的快捷键配置了一些可枚举的字符串，其为：today, yesterday, last7Days, thisWeek, lastWeek, thisMonth, lastMonth, thisSeason, lastSeason, thisYear, lastYear
+       ],
    },
    submitCallback: function (start, end) {} // 点击确定或者重置后，触发该回调，参数start和end分别为开始时间或者结束日期，其结果可能为Date对象或者是格式化字符串，需要根据output.plain字段来定
 }

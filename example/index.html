@@ -14,20 +14,24 @@
 <script type="text/javascript" src="../lib/jquery.js"></script>
 <script type="text/javascript" src="../dist/daterangeselect.js"></script>
 <body>
-<input id="id1" type="text"/>
+<input id="id1" type="text" style="position: absolute; right: 0;"/>
 
 </body>
 <script>
     $("#id1").DateRangeSelect({
         output: {
             show: $("#id1"),
-            allowEmtpy: false,
-            plain: false,
         },
         range: {
             show: true,
             data: [
-
+                {
+                    type: 'month',
+                    name: '前三个月',
+                    offsetStart: -3,
+                    offsetEnd: -1,
+                },
+                "yesterday",
             ],
         },
         submitCallback: function (start, end) {
